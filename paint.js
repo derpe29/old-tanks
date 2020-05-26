@@ -250,7 +250,7 @@ function bullet(x,y,r){
 
 //столкновение с пулей
 				for (var i = 0; i < items.length; i++) {
-    if (((x - items[i].x) < 30 && (x - items[i].x)> -30 ) && (((yo - items[i].y) <=30)) && (yo - items[i].y)>= 0)  {
+    if (((x - items[i].x) < 29 && (x - items[i].x)> -4 ) && (((yo - items[i].y) <=30)) && (yo - items[i].y)>= 0)  {
         console.log('kollisia')
        yo = -1
 		}
@@ -275,7 +275,7 @@ function bullet(x,y,r){
 
 //столкновение с пулей
         for (var i = 0; i < items.length; i++) {
-     if (((items[i].x - xo) <= 30 && (items[i].x - xo)>= 0 ) && (((y - items[i].y) <30)) && (y - items[i].y)> -30)  {
+     if (((items[i].x - xo) <= 15 && (items[i].x - xo)>= -30 ) && (((y - items[i].y) <29)) && (y - items[i].y)> -4)  {
         console.log('kollisia')
        xo = 3000;
      }
@@ -297,7 +297,7 @@ function bullet(x,y,r){
 
 //столкновение с пулей
         for (var i = 0; i < items.length; i++) {
-    if (((x - items[i].x) < 30 && (x - items[i].x)> -30 ) && (((items[i].y - yo) <=30)) && (items[i].y - yo)>= 0)  {
+    if (((x - items[i].x) < 29 && (x - items[i].x)> -4 ) && (((items[i].y - yo) <=15)) && (items[i].y - yo)>= -30)  {
         console.log('kollisia')
        yo = 3000;
     }
@@ -322,7 +322,7 @@ function bullet(x,y,r){
 
 //столкновение с пулей
         for (var i = 0; i < items.length; i++) {
-     if (((xo - items[i].x) <= 30 && (xo - items[i].x)>= 0 ) && (((y - items[i].y) <30)) && (y - items[i].y)> -30)  {
+     if (((xo - items[i].x) <= 30 && (xo - items[i].x)>= 0 ) && (((y - items[i].y) <29)) && (y - items[i].y)> -4)  {
         console.log('kollisia')
        xo = -1;
      }
