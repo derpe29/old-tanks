@@ -10,10 +10,12 @@ let ctx = cnv.getContext("2d");
 let xp = 0;
 let yp = 0;
 //скорость
-let speed = 10;
+let speed = 3;
+let tr = 0;
 
 //массив окружения
 let items = [];
+let tancks = [];
 //количество объектов окружения
 let boxn = 0;
 let blockn = 0;
@@ -22,11 +24,78 @@ let tankDir = 0;
 //начальная позиция пули
 let bpx = 0;
 let bpy = 0;
+let tanck = {
+    type:"tanck",
+     id:1,
+     x:90,
+     y:90,
+     speed:10,
+     bullet:10,
+     healh:3
+  }
+  let bulletm = [];
+  let health = 3;
+ let bulletN = 10;
+ let ntanck = 0;
+ let anim;
+ let bild = true;
+ let rot = 0;
+ let idbull = 0;
+let img = new Image();
+  let bulletImg = new Image();
 
+function clear () {
+  ctx.clearRect(0,0,cnv.width,cnv.height);
+}
 
- 
-//отрисовка окружения
-for(let i=0; i<=1000; i+=30){
+function draw () {
+for (let i = 0; i<items.length ; i++) {
+block(items[i].x,items[i].y,"#FF952B","#E8641C");
+
+switch(tr) {
+case 1:
+ img.src = 'tanck4.png';
+ break;
+ case 2:
+ img.src = 'tanck1.png';
+ break;
+ case 3:
+ img.src = 'tanck2.png';
+ break;
+ case 4:
+ img.src = 'tanck3.png';
+ break;
+}
+  ctx.drawImage(img, xp, yp, 30, 30);
+
+}
+for(let i = 0; i<bulletm.length;i++){
+  
+switch(bulletm[i].r) {
+case 1:
+ bulletImg.src = 'b1.png';
+ ctx.drawImage(bulletImg, bulletm[i].x, bulletm[i].y, 5, 15);
+ break;
+ case 2:
+ bulletImg.src = 'b2.png';
+ ctx.drawImage(bulletImg, bulletm[i].x, bulletm[i].y, 15, 5);
+ break;
+ case 3:
+ bulletImg.src = 'b3.png';
+ ctx.drawImage(bulletImg, bulletm[i].x, bulletm[i].y, 5, 15);
+ break;
+ case 4:
+ bulletImg.src = 'b4.png';
+ ctx.drawImage(bulletImg, bulletm[i].x, bulletm[i].y, 15, 5);
+ break;
+}
+  }
+
+console.log(xp,yp,rot);
+tank(xp,yp,rot);
+}
+
+ for(let i=0; i<=1000; i+=30){
   block(i,0,"#FF952B","#E8641C");
 }
 for(let i=0; i<=1000; i+=30){
@@ -41,13 +110,8 @@ for(let i=0; i<=1000; i+=30){
 
 
 block(180,180,"#FF952B","#E8641C");
-
-
-
-
-
-
-//Управление танком
+bild = false;
+//управление танком
 document.addEventListener('keydown', function(event) {
   if (event.code == 'KeyW') {
     // console.log(xp,yp,tankDir,bpx,bpy);
@@ -59,14 +123,10 @@ document.addEventListener('keydown', function(event) {
       }
     }
     if (canMove) {
-      ctx.clearRect(xp,yp,30,30);
       yp -= speed;
-      tank(xp,yp,1);  
+      rot = 1;
     }
-    else{
-      ctx.clearRect(xp,yp,30,30);
-      tank(xp,yp,1);  
-    }  
+    
   }
 });
 document.addEventListener('keydown', function(event) {
@@ -80,14 +140,10 @@ document.addEventListener('keydown', function(event) {
       }
     }
     if (canMove) {
-      ctx.clearRect(xp,yp,30,30);
       xp -= speed;
-      tank(xp,yp,4);
+      rot = 4;
     }
-    else{
-      ctx.clearRect(xp,yp,30,30);
-      tank(xp,yp,4);
-    }
+    
   }
 });
 document.addEventListener('keydown', function(event) {
@@ -101,14 +157,10 @@ document.addEventListener('keydown', function(event) {
       }
     }
     if (canMove) {
-      ctx.clearRect(xp,yp,30,30);
       yp += speed;
-      tank(xp,yp,3);
+      rot = 3;
     }
-    else{
-      ctx.clearRect(xp,yp,30,30);
-      tank(xp,yp,3);
-    }
+   
   }
 });
 document.addEventListener('keydown', function(event) {  
@@ -123,15 +175,11 @@ document.addEventListener('keydown', function(event) {
       }
     }
     if (canMove) {
-    ctx.clearRect(xp,yp,30,30);
-    xp += speed;
-    tank(xp,yp,2);
- 	 }
-  else{ 
-    ctx.clearRect(xp,yp,30,30);
-    tank(xp,yp,2);
 
-  }
+    xp += speed;
+    rot = 2;
+   }
+ 
   }
 });
 
@@ -140,31 +188,52 @@ document.addEventListener('keydown', function(event) {
 
 document.addEventListener('keydown', function(event) {
   if (event.code == 'ShiftLeft') {
-	switch(tankDir){
-		case 1:
-			bpx = xp+12;
-			bpy = yp-15;
-			break;
-		case 2:
-			bpx = xp+30;
-			bpy = yp+12;
-			break;
-		case 3:
-			bpx = xp+13;
-			bpy = yp+30;
-			break;
-		case 4:
-			bpx = xp-15;
-			bpy = yp+13;
-			break;
-		}
-	console.log(bpx,bpy,tankDir)
-	bullet(bpx,bpy,tankDir);
+  switch(tankDir){
+    case 1:
+      bpx = xp+12;
+      bpy = yp-15;
+      break;
+    case 2:
+      bpx = xp+30;
+      bpy = yp+12;
+      break;
+    case 3:
+      bpx = xp+13;
+      bpy = yp+30;
+      break;
+    case 4:
+      bpx = xp-15;
+      bpy = yp+13;
+      break;
+    }
+  console.log(bpx,bpy,tankDir)
+  bullet(bpx,bpy,tankDir);
 }
 });
+function Render () {
+  // body...
 
 
 
+//Управление танком
+
+}
+
+function animate () {
+  anim = requestAnimationFrame(animate);
+  clear();
+  draw();
+  Render();
+}
+anim = requestAnimationFrame(animate);
+
+
+document.addEventListener('keydown', function(event) {
+  if (event.code == 'Escape') {
+ cancelAnimationFrame(anim);
+ alert("hi");
+}
+});
 
 //конструктор блоков
 function block(x,y,st,sf,){
@@ -176,9 +245,11 @@ function block(x,y,st,sf,){
   ctx.fillRect(x+8,y+8,15,15);
   ctx.fillStyle = st;
   ctx.fillRect(x+12,y+12,7,7);
+  if (bild) {
   let block = {type:"block", id:blockn, x:x, y:y};
   blockn += 1;
   items.push(block);
+}
 }
 
 //конструктор блоков 2
@@ -197,38 +268,31 @@ function box(x,y,st,sf,){
   ctx.moveTo(x+30,y);
   ctx.lineTo(x,y+30);
   ctx.stroke();
-  let box = {type:"box", id:boxn, x:x, y:y};
-  boxn += 1;
-  items.push(box);
+  if(bild){
+    let box = {type:"box", id:boxn, x:x, y:y};
+    boxn += 1;
+    items.push(box);
+  }
 }
 //конструктор танка
 function tank(x,y,r){
   tankDir = r;
   xp = x;
   yp = y;
-  let deg;
-  switch(tankDir){
-    case 1:
-      deg = Math.PI*3/2;
-      break;
-    case 2:
-      deg = Math.PI*2;
-      break;
-    case 3:
-      deg = Math.PI/2;
-      break;
-    case 4:
-      deg = Math.PI;
-      break;
+  tr = r;
+  console.log(xp,yp,tankDir);
+  let tanck = {
+    type:"tanck",
+     id:ntanck,
+     x:x,
+     y:y,
+     r:r,
+     speed:speed,
+     bullet:bulletN,
+     healh:health
   }
-  ctx.save();
-  ctx.translate(x+15,y+15);
-  ctx.rotate(deg);
-  let img = new Image();   // Create new img element
-  img.src = 'tanck.png'; // Set source path
-  ctx.drawImage(img, -15, -15, 30, 30);
-  console.log(xp,yp,tankDir,img);
-  ctx.restore();
+  ntanck++;
+  tancks.push(tanck);
 }
 
 //конструктор  пули
@@ -236,7 +300,7 @@ function bullet(x,y,r){
 	let safeCount = 0;
 	let yo = y;
   let xo = x;
-    let bulletImg = new Image(); 
+     
 	switch(r){
 		case 1:
 			bulletImg.src = 'b1.png'; // Set source path
@@ -251,7 +315,17 @@ function bullet(x,y,r){
 //столкновение с пулей
 				for (var i = 0; i < items.length; i++) {
     if (((x - items[i].x) < 29 && (x - items[i].x)> -4 ) && (((yo - items[i].y) <=30)) && (yo - items[i].y)>= 0)  {
-        console.log('kollisia')
+        console.log('kollisia');
+        let bull = {
+          type:"bull",
+          id:idbull,
+          x:xo,
+          y:yo,
+          r:r
+        }
+        idbull++;
+        bulletm.push(bull);
+
        yo = -1
 		}
 	}
@@ -262,6 +336,7 @@ function bullet(x,y,r){
 					break;
 			}
 		}
+   
 			break;
 		case 2:
 		  	bulletImg.src = 'b2.png'; // Set source path
@@ -277,6 +352,15 @@ function bullet(x,y,r){
         for (var i = 0; i < items.length; i++) {
      if (((items[i].x - xo) <= 15 && (items[i].x - xo)>= -30 ) && (((y - items[i].y) <29)) && (y - items[i].y)> -4)  {
         console.log('kollisia')
+        let bull = {
+          type:"bull",
+          id:idbull,
+          x:xo,
+          y:yo,
+          r:r
+        }
+        idbull++;
+        bulletm.push(bull);
        xo = 3000;
      }
    }
@@ -299,6 +383,15 @@ function bullet(x,y,r){
         for (var i = 0; i < items.length; i++) {
     if (((x - items[i].x) < 29 && (x - items[i].x)> -4 ) && (((items[i].y - yo) <=15)) && (items[i].y - yo)>= -30)  {
         console.log('kollisia')
+        let bull = {
+          type:"bull",
+          id:idbull,
+          x:xo,
+          y:yo,
+          r:r
+        }
+        idbull++;
+        bulletm.push(bull);
        yo = 3000;
     }
   }
@@ -324,6 +417,15 @@ function bullet(x,y,r){
         for (var i = 0; i < items.length; i++) {
      if (((xo - items[i].x) <= 30 && (xo - items[i].x)>= 0 ) && (((y - items[i].y) <29)) && (y - items[i].y)> -4)  {
         console.log('kollisia')
+        let bull = {
+          type:"bull",
+          id:idbull,
+          x:xo,
+          y:yo,
+          r:r
+        }
+        idbull++;
+        bulletm.push(bull);
        xo = -1;
      }
    }
