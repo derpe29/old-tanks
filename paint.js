@@ -33,6 +33,7 @@ let tanck = {
      bullet:10,
      healh:3
   }
+  let bulspeed = 3;
   let bulletm = [];
   let health = 3;
  let bulletN = 10;
@@ -50,7 +51,13 @@ function clear () {
 
 function draw () {
 for (let i = 0; i<items.length ; i++) {
+  if(items[i].type == "block")
+  {
 block(items[i].x,items[i].y,"#FF952B","#E8641C");
+}else if(items[i].type == "box")
+{
+  box(items[i].x,items[i].y,"#FF952B","#E8641C");
+}
 
 switch(tr) {
 case 1:
@@ -110,6 +117,9 @@ for(let i=0; i<=1000; i+=30){
 
 
 block(180,180,"#FF952B","#E8641C");
+box(360,360,"#FF952B","#E8641C");
+box(180,360,"#FF952B","#E8641C");
+box(360,180,"#FF952B","#E8641C");
 bild = false;
 //управление танком
 document.addEventListener('keydown', function(event) {
@@ -307,7 +317,7 @@ function bullet(x,y,r){
 			ctx.drawImage(bulletImg, x, yo, 5, 15);
 			while(yo>=0){
 				yo-=3				
-				ctx.clearRect(x, yo+3, 5, 15)
+				ctx.clearRect(x, yo+3, 5, 15);
 				ctx.drawImage(bulletImg, x, yo, 5, 15);
 
 				console.log(bulletImg.src);
@@ -315,7 +325,10 @@ function bullet(x,y,r){
 //столкновение с пулей
 				for (var i = 0; i < items.length; i++) {
     if (((x - items[i].x) < 29 && (x - items[i].x)> -4 ) && (((yo - items[i].y) <=30)) && (yo - items[i].y)>= 0)  {
-        console.log('kollisia');
+        if(items[i].type == "box")
+        {
+          items.splice(i,1);
+        }
         let bull = {
           type:"bull",
           id:idbull,
@@ -351,7 +364,10 @@ function bullet(x,y,r){
 //столкновение с пулей
         for (var i = 0; i < items.length; i++) {
      if (((items[i].x - xo) <= 15 && (items[i].x - xo)>= -30 ) && (((y - items[i].y) <29)) && (y - items[i].y)> -4)  {
-        console.log('kollisia')
+        if(items[i].type == "box")
+        {
+          items.splice(i,1);
+        }
         let bull = {
           type:"bull",
           id:idbull,
@@ -382,7 +398,10 @@ function bullet(x,y,r){
 //столкновение с пулей
         for (var i = 0; i < items.length; i++) {
     if (((x - items[i].x) < 29 && (x - items[i].x)> -4 ) && (((items[i].y - yo) <=15)) && (items[i].y - yo)>= -30)  {
-        console.log('kollisia')
+        if(items[i].type == "box")
+        {
+          items.splice(i,1);
+        }
         let bull = {
           type:"bull",
           id:idbull,
@@ -416,7 +435,10 @@ function bullet(x,y,r){
 //столкновение с пулей
         for (var i = 0; i < items.length; i++) {
      if (((xo - items[i].x) <= 30 && (xo - items[i].x)>= 0 ) && (((y - items[i].y) <29)) && (y - items[i].y)> -4)  {
-        console.log('kollisia')
+        if(items[i].type == "box")
+        {
+          items.splice(i,1);
+        }
         let bull = {
           type:"bull",
           id:idbull,
