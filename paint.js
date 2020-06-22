@@ -46,7 +46,19 @@ function clear () {
 }
 
 function draw () {
-  // console.log(tancks);
+  let hp = document.querySelector('#d');
+  let hps = document.querySelector('#db');
+  if (tancks.length>1) {
+    hp.innerText = tancks[0].health;
+    hps.innerText = tancks[1].health;
+  }else if (tancks[0].id == 1) {
+    hp.innerText = 0;
+    hps.innerText = tancks[0].health;
+  }else{
+    hp.innerText = tancks[0].health;
+    hps.innerText = 0;
+  }
+  
 for (let i = 0; i<items.length ; i++) {
   if(items[i].type == "block")
   {
@@ -107,13 +119,13 @@ case 1:
 
 }
 
- for(let i=0; i<=1000; i+=30){
+ for(let i=0; i<=970; i+=30){
   block(i,0,"#FF952B","#E8641C");
 }
 for(let i=0; i<=1000; i+=30){
   block(0,i,"#FF952B","#E8641C");
 }
-for(let i=0; i<=1000; i+=30){
+for(let i=0; i<=970; i+=30){
   block(i,630,"#FF952B","#E8641C");
 }
 for(let i=0; i<=1000; i+=30){
@@ -205,27 +217,33 @@ document.addEventListener('keydown', function(event) {
 
 document.addEventListener('keydown', function(event) {
   if (event.code == 'ShiftLeft' && Date.now() - time >= colldown) {
-  switch(tancks[0].r){
+    for (var i = 0; i<tancks.length; i++){
+     if (tancks[i].id == 0) {
+      switch(tancks[i].r){
     case 1:
-      bpx = tancks[0].x+12;
-      bpy = tancks[0].y-15;
+      bpx = tancks[i].x+12;
+      bpy = tancks[i].y-15;
       break;
     case 2:
-      bpx = tancks[0].x+30;
-      bpy = tancks[0].y+12;
+      bpx = tancks[i].x+30;
+      bpy = tancks[i].y+12;
       break;
     case 3:
-      bpx = tancks[0].x+13;
-      bpy =  tancks[0].y+30;
+      bpx = tancks[i].x+13;
+      bpy =  tancks[i].y+30;
       break;
     case 4:
-      bpx = tancks[0].x-15;
-      bpy = tancks[0].y+13;
+      bpx = tancks[i].x-15;
+      bpy = tancks[i].y+13;
       break;
     }
-  console.log(bpx,bpy,tancks[0].r);
+    break;
+     } 
+    }
+  
+  console.log(bpx,bpy,tancks[i].r);
   time = Date.now();
-  bullet(bpx,bpy,tancks[0].r);
+  bullet(bpx,bpy,tancks[i].r);
 
 }
 });
@@ -306,27 +324,32 @@ document.addEventListener('keydown', function(event) {
 
 document.addEventListener('keydown', function(event) {
   if (event.code == 'ShiftRight' && Date.now() - time >= colldown) {
-  switch(tancks[1].r){
+    for (var i = 0; i<tancks.length; i++){
+     if (tancks[i].id == 1) {
+  switch(tancks[i].r){
     case 1:
-      bpx = tancks[1].x+12;
-      bpy = tancks[1].y-15;
+      bpx = tancks[i].x+12;
+      bpy = tancks[i].y-15;
       break;
     case 2:
-      bpx = tancks[1].x+30;
-      bpy = tancks[1].y+12;
+      bpx = tancks[i].x+30;
+      bpy = tancks[i].y+12;
       break;
     case 3:
-      bpx = tancks[1].x+13;
-      bpy = tancks[1].y+30;
+      bpx = tancks[i].x+13;
+      bpy = tancks[i].y+30;
       break;
     case 4:
-      bpx = tancks[1].x-15;
-      bpy = tancks[1].y+13;
+      bpx = tancks[i].x-15;
+      bpy = tancks[i].y+13;
       break;
     }
-  console.log(bpx,bpy,tancks[1].r);
+    break;
+  }
+}
+  console.log(bpx,bpy,tancks[i].r);
   time = Date.now();
-  bullet(bpx,bpy,tancks[1].r);
+  bullet(bpx,bpy,tancks[i].r);
 
 }
 });
@@ -426,7 +449,7 @@ bulletm[i].x+=bulspeed;
  case 2:
  //выстрел вправо
 bulletm[i].x+=bulspeed;
-            for (let j = 0; j < items.length; j++) {
+            for (let j = 0; j < tancks.length; j++) {
               if (((tancks[j].x - x) <= 15 && (tancks[j].x - x)>= -30 ) && (((y - tancks[j].y) <29)) && (y - tancks[j].y)> -4)  {
                     tancks[j].health -=1;
                     if(tancks[j].health < 1){
@@ -441,7 +464,7 @@ bulletm[i].x+=bulspeed;
  case 3:
  //выстрел вниз
  bulletm[i].y+=bulspeed;
-            for (let j = 0; j < items.length; j++) {
+            for (let j = 0; j < tancks.length; j++) {
               if (((x - tancks[j].x) < 29 && (x - tancks[j].x)> -4 ) && (((tancks[j].y - y) <=15)) && (tancks[j].y - y)>= -30)  {
                     tancks[j].health -=1;
                     if(tancks[j].health < 1){
@@ -455,7 +478,7 @@ bulletm[i].x+=bulspeed;
  case 4:
  //выстрел влево
  bulletm[i].x-=bulspeed;
-            for (let j = 0; j < items.length; j++) {
+            for (let j = 0; j < tancks.length; j++) {
               if (((x - tancks[j].x) <= 30 && (x - tancks[j].x)>= 0 ) && (((y - tancks[j].y) <29)) && (y - tancks[j].y)> -4)  {
 
                     tancks[j].health -=1;

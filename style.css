@@ -1,0 +1,19 @@
+canvas{
+			background-color: #41DE33;
+		}
+.ft {
+	color: #D45C1C;
+}
+.st {
+	color: #37CF13;
+}
+.hud {
+	display: flex;
+	justify-content: center;
+	position: absolute;
+	right: 10px;
+	top: 0px;
+}
+#g {
+	margin-right: 80px;
+}
