@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<style>
-		canvas{
-			background-color: #41DE33;
-		}
-	</style>
 	<meta charset="UTF-8">
 	<title>canvas</title>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<canvas id="cnv" height="660" width="1500"></canvas>
-	<script src="paint.js"></script>
-<!-- 	<script src="setka.js"></script> -->
+	<canvas id="cnv" height="660" width="1200"></canvas>
+<div class="hud">
+	<div id="g">
+		<h1 class="ft">Tanck 1</h1>
+		<h2 class="ft">health: <span id="d"></span></h2>
+	</div>
+	<div>
+		<h1 class="st">Tanck 2</h1>
+		<h2 class="st">health: <span id="db"></span></h2>
+	</div>
+</div>
+<script src="paint.js"></script>
+	<script src="render.js"></script>
 </body>
 </html>
