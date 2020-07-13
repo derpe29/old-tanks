@@ -10,10 +10,12 @@ let ctx = cnv.getContext("2d");
 let tyr = 0;
 let tgn = 0;
 let colldown = 333;
+
 let time = Date.now();
 //массив окружения
 let items = [];
 let tancks = [];
+let invetar = [];
 //количество объектов окружения
 let boxn = 0;
 let blockn = 0;
@@ -30,6 +32,7 @@ let bpy = 0;
 //      bullet:10,
 //      healh:3
 //   }
+  let keys = new Set();
   let bulspeed = 10;
   let bulletm = [];
   let health = 3;
@@ -38,8 +41,11 @@ let bpy = 0;
  let anim;
  let bild = true;
  let idbull = 0;
-
+ let spawn = 10000;
+let colspawn = Date.now();
   let bulletImg = new Image();
+  let bulletIvImg = new Image();
+  let hpimg = new Image();
 
 function clear () {
   ctx.clearRect(0,0,cnv.width,cnv.height);
@@ -48,6 +54,8 @@ function clear () {
 function draw () {
   let hp = document.querySelector('#d');
   let hps = document.querySelector('#db');
+  let bulf = document.querySelector('#b');
+  let buls = document.querySelector('#bb');
   if (tancks.length>1) {
     hp.innerText = tancks[0].health;
     hps.innerText = tancks[1].health;
@@ -58,6 +66,9 @@ function draw () {
     hp.innerText = tancks[0].health;
     hps.innerText = 0;
   }
+
+  bulf.innerText = tancks[0].bullet;
+  buls.innerText = tancks[1].bullet;
   
 for (let i = 0; i<items.length ; i++) {
   if(items[i].type == "block")
@@ -93,6 +104,16 @@ let img4 = new Image();
  break;
 }
 
+}
+
+for(let i = 0; i<invetar.length;i++){
+  if(invetar[i].type == "bullIv") {
+bulletIvImg.src = 'bul.png';
+ ctx.drawImage(bulletIvImg, invetar[i].x, invetar[i].y, 30, 20);
+}else if(invetar[i].type == "hpbox"){
+hpimg.src = 'hpbox.png';
+ ctx.drawImage(hpimg, invetar[i].x, invetar[i].y, 30, 20);
+ }
 }
 
 for(let i = 0; i<bulletm.length;i++){
@@ -132,18 +153,72 @@ for(let i=0; i<=1000; i+=30){
   block(960,i,"#FF952B","#E8641C");
 }
 
+
+  
+
 tank(90,90,4);
 tank(300,300,2);
+bulletIv(270,270);
+bulletIv(270,90);
+hpbox(330,270);
+hpbox(90,180);
+
 
 block(180,180,"#FF952B","#E8641C");
 box(360,360,"#FF952B","#E8641C");
 box(180,360,"#FF952B","#E8641C");
 box(360,180,"#FF952B","#E8641C");
 bild = false;
-//управление танком
-document.addEventListener('keydown', function(event) {
-  if (event.code == 'KeyW') {
-    // console.log(xp,yp,tankDir,bpx,bpy);
+
+
+// Keyboard input with customisable repeat (set to 0 for no key repeat)
+//
+function KeyboardController(keys, repeat) {
+    // Lookup of key codes to timer ID, or null for no repeat
+    //
+    var timers= {};
+
+    // When key is pressed and we don't already think it pressed, call the
+    // key action callback and set a timer to generate another one after a delay
+    //
+    document.onkeydown= function(event) {
+        var key= (event || window.event).keyCode;
+        if (!(key in keys))
+            return true;
+        if (!(key in timers)) {
+            timers[key]= null;
+            keys[key]();
+            if (repeat!==0)
+                timers[key]= setInterval(keys[key], repeat);
+        }
+        return false;
+    };
+
+    // Cancel timeout and mark key as released on keyup
+    //
+    document.onkeyup= function(event) {
+        var key= (event || window.event).keyCode;
+        if (key in timers) {
+            if (timers[key]!==null)
+                clearInterval(timers[key]);
+            delete timers[key];
+        }
+    };
+
+    // When window is unfocused we may not get key events. To prevent this
+    // causing a key to 'get stuck down', cancel all held keys
+    //
+    window.onblur= function() {
+        for (key in timers)
+            if (timers[key]!==null)
+                clearInterval(timers[key]);
+        timers= {};
+    };
+};
+
+KeyboardController({
+    87: function() {
+         // console.log(xp,yp,tankDir,bpx,bpy);
     let canMove = true;
     for (var i = 0; i < items.length; i++) {
       if (((tancks[0].x - items[i].x) < 30 && (tancks[0].x - items[i].x)> -30 ) && (((tancks[0].y - items[i].y) <=30)) && (tancks[0].y - items[i].y)>= 0)  {
@@ -151,16 +226,17 @@ document.addEventListener('keydown', function(event) {
         canMove = false;
       }
     }
+
+    
     if (canMove) {
       tancks[0].y -= tancks[0].speed;
       tancks[0].r = 1;
     }
     
-  }
-});
-document.addEventListener('keydown', function(event) {
-  if (event.code == 'KeyA') {
-    // console.log(xp,yp,tankDir,bpx,bpy);
+   },
+
+    65: function() {
+      console.log(xp,yp,tankDir,bpx,bpy);
     let canMove = true;
     for (var i = 0; i < items.length; i++) {
       if (((tancks[0].x - items[i].x) <= 30 && (tancks[0].x - items[i].x)>= 0 ) && (((tancks[0].y - items[i].y) <30)) && (tancks[0].y - items[i].y)> -30)  {
@@ -171,13 +247,10 @@ document.addEventListener('keydown', function(event) {
     if (canMove) {
       tancks[0].x -= tancks[0].speed;
       tancks[0].r = 4;
-    }
-    
-  }
-});
-document.addEventListener('keydown', function(event) {
-  if (event.code == 'KeyS') {
-    // console.log(xp,yp,tankDir,bpx,bpy);
+    } },
+
+    83: function() {
+     console.log(xp,yp,tankDir,bpx,bpy);
     let canMove = true;
     for (var i = 0; i < items.length; i++) {
       if (((tancks[0].x - items[i].x) < 30 && (tancks[0].x - items[i].x)> -30 ) && (((items[i].y - tancks[0].y) <=30)) && (items[i].y - tancks[0].y)>= 0)  {
@@ -188,13 +261,11 @@ document.addEventListener('keydown', function(event) {
     if (canMove) {
       tancks[0].y += tancks[0].speed;
       tancks[0].r = 3;
-    }
-   
-  }
-});
-document.addEventListener('keydown', function(event) {  
-  if (event.code == 'KeyD') {
-    // console.log(xp,yp,tankDir,bpx,bpy);
+    } },
+
+
+    68: function() {
+      console.log(xp,yp,tankDir,bpx,bpy);
 
     let canMove = true;
     for (var i = 0; i < items.length; i++) {
@@ -207,18 +278,11 @@ document.addEventListener('keydown', function(event) {
 
     tancks[0].x += tancks[0].speed;
     tancks[0].r = 2;
-   }
- 
-  }
-});
+   } },
 
-
-
-
-document.addEventListener('keydown', function(event) {
-  if (event.code == 'ShiftLeft' && Date.now() - time >= colldown) {
-    for (var i = 0; i<tancks.length; i++){
-     if (tancks[i].id == 0) {
+    16: function() {
+     for (var i = 0; i<tancks.length; i++){
+     if (tancks[i].id == 0 && tancks[i].bullet > 0 && Date.now() - tancks[i].colldown >= colldown) {
       switch(tancks[i].r){
     case 1:
       bpx = tancks[i].x+12;
@@ -237,20 +301,18 @@ document.addEventListener('keydown', function(event) {
       bpy = tancks[i].y+13;
       break;
     }
+    tancks[i].bullet -= 1;
     break;
      } 
     }
   
-  console.log(bpx,bpy,tancks[i].r);
-  time = Date.now();
-  bullet(bpx,bpy,tancks[i].r);
+  // console.log(bpx,bpy,tancks[i].r);
+  tancks[i].colldown = Date.now();
+  bullet(bpx,bpy,tancks[i].r); },
 
-}
-});
 
-document.addEventListener('keydown', function(event) {
-  if (event.code == 'ArrowUp') {
-    // console.log(xp,yp,tankDir,bpx,bpy);
+    38: function() {
+      console.log(xp,yp,tankDir,bpx,bpy);
     let canMove = true;
     for (var i = 0; i < items.length; i++) {
       if (((tancks[1].x - items[i].x) < 30 && (tancks[1].x - items[i].x)> -30 ) && (((tancks[1].y - items[i].y) <=30)) && (tancks[1].y - items[i].y)>= 0)  {
@@ -261,13 +323,11 @@ document.addEventListener('keydown', function(event) {
     if (canMove) {
       tancks[1].y -= tancks[1].speed;
       tancks[1].r = 1;
-    }
-    
-  }
-});
-document.addEventListener('keydown', function(event) {
-  if (event.code == 'ArrowLeft') {
-    // console.log(xp,yp,tankDir,bpx,bpy);
+    } },
+
+
+    37: function() {
+    console.log(xp,yp,tankDir,bpx,bpy);
     let canMove = true;
     for (var i = 0; i < items.length; i++) {
       if (((tancks[1].x - items[i].x) <= 30 && (tancks[1].x - items[i].x)>= 0 ) && (((tancks[1].y - items[i].y) <30)) && (tancks[1].y - items[i].y)> -30)  {
@@ -278,13 +338,11 @@ document.addEventListener('keydown', function(event) {
     if (canMove) {
       tancks[1].x -= tancks[1].speed;
       tancks[1].r = 4;
-    }
-    
-  }
-});
-document.addEventListener('keydown', function(event) {
-  if (event.code == 'ArrowDown') {
-    // console.log(xp,yp,tankDir,bpx,bpy);
+    } },
+
+
+    36: function() {
+    console.log(xp,yp,tankDir,bpx,bpy);
     let canMove = true;
     for (var i = 0; i < items.length; i++) {
       if (((tancks[1].x - items[i].x) < 30 && (tancks[1].x - items[i].x)> -30 ) && (((items[i].y - tancks[1].y) <=30)) && (items[i].y - tancks[1].y)>= 0)  {
@@ -295,13 +353,10 @@ document.addEventListener('keydown', function(event) {
     if (canMove) {
       tancks[1].y += tancks[1].speed;
       tancks[1].r = 3;
-    }
-   
-  }
-});
-document.addEventListener('keydown', function(event) {  
-  if (event.code == 'ArrowRight') {
-    // console.log(xp,yp,tankDir,bpx,bpy);
+    } },
+
+    39: function() { 
+    console.log(xp,yp,tankDir,bpx,bpy);
 
     let canMove = true;
     for (var i = 0; i < items.length; i++) {
@@ -314,18 +369,11 @@ document.addEventListener('keydown', function(event) {
 
     tancks[1].x += tancks[1].speed;
     tancks[1].r = 2;
-   }
- 
-  }
-});
+   } },
 
-
-
-
-document.addEventListener('keydown', function(event) {
-  if (event.code == 'ShiftRight' && Date.now() - time >= colldown) {
-    for (var i = 0; i<tancks.length; i++){
-     if (tancks[i].id == 1) {
+    96: function() { 
+     for (var i = 0; i<tancks.length; i++){
+     if (tancks[i].id == 1 && tancks[i].bullet > 0 && Date.now() - tancks[i].colldown >= colldown) {
   switch(tancks[i].r){
     case 1:
       bpx = tancks[i].x+12;
@@ -344,17 +392,50 @@ document.addEventListener('keydown', function(event) {
       bpy = tancks[i].y+13;
       break;
     }
+    tancks[i].bullet -= 1;
     break;
   }
 }
-  console.log(bpx,bpy,tancks[i].r);
-  time = Date.now();
-  bullet(bpx,bpy,tancks[i].r);
+  // console.log(bpx,bpy,tancks[i].r);
+  tancks[i].colldown = Date.now();
+  bullet(bpx,bpy,tancks[i].r);},
 
-}
-});
+
+    40: function() { 
+    console.log(xp,yp,tankDir,bpx,bpy);
+    let canMove = true;
+    for (var i = 0; i < items.length; i++) {
+      if (((tancks[1].x - items[i].x) < 30 && (tancks[1].x - items[i].x)> -30 ) && (((items[i].y - tancks[1].y) <=30)) && (items[i].y - tancks[1].y)>= 0)  {
+        console.log('kollisia')
+        canMove = false;
+      }
+    }
+    if (canMove) {
+      tancks[1].y += tancks[1].speed;
+      tancks[1].r = 3;
+    } }
+
+
+}, 30);
+
 
 function Render () {
+  if(Date.now() - colspawn >= spawn){
+    let object;
+    switch(rand(1,3)){
+      case 1:
+      object = hpbox;
+      break;
+      case 2:
+      object = bulletIv;
+      break;
+    }
+  let ran = spawner();
+    object(ran[0] * 30, ran[1] * 30);
+    colspawn = Date.now();
+  }
+
+
   //проверка столкновения пули с объектами
   for (let  i = 0; i < bulletm.length; i++) {
     let x = bulletm[i].x;
@@ -431,7 +512,7 @@ bulletm[i].x+=bulspeed;
       case 1:
         bulletm[i].y-=bulspeed;
             for (let j = 0; j < tancks.length; j++) {
-              if (((x - tancks[j].x) < 29 && (x - tancks[j].x)> -4 ) && (((y - tancks[j].y) <=30)) && (y - tancks[j].y)>= 0)  {
+              if (((x - tancks[j].x) < 29 && (x - tancks[j].x)> -4 ) && (((y - tancks[j].y) <=20)) && (y - tancks[j].y)>= 0)  {
                 
                     tancks[j].health -=1;
                     if(tancks[j].health < 1){
@@ -494,6 +575,84 @@ bulletm[i].x+=bulspeed;
 
   }
 
+  for (let  i = 0; i < invetar.length; i++) {
+    let x = invetar[i].x;
+    let y = invetar[i].y;
+  for (let k = 0; k < tancks.length; k++) {
+   
+    switch(tancks[k].r) {
+      //выстрел вверх
+      case 1:
+
+              if (((x - tancks[k].x) < 29 && (x - tancks[k].x)> -29 ) && (((tancks[k].y - y) <=19)) && (tancks[k].y - y)>= 0)  {
+                 if(invetar[i].type == "bullIv"){
+                  tancks[k].bullet += 3;
+                    invetar.splice(i,1);
+                break;
+              }
+              if(invetar[i].type == "hpbox") {
+                tancks[k].health += 1;
+                    invetar.splice(i,1);
+                break;
+              }
+              }
+
+       break;
+       
+       
+       
+ case 2:
+
+              if (((x - tancks[k].x) < 29 && (x - tancks[k].x)> -29 ) && (((tancks[k].y - y) <=19)) && (tancks[k].y - y)>= -19)  {
+                  if(invetar[i].type == "bullIv"){
+                  tancks[k].bullet += 3;
+                    invetar.splice(i,1);
+                break;
+              }
+              if(invetar[i].type == "hpbox") {
+                tancks[k].health += 1;
+                    invetar.splice(i,1);
+                break;
+              }
+              }
+
+       break;
+ case 3:
+
+              if (((x - tancks[k].x) < 29 && (x - tancks[k].x)> -29 ) && (((tancks[k].y - y) <=0)) && (tancks[k].y - y)>= -29)  {
+                  if(invetar[i].type == "bullIv"){
+                  tancks[k].bullet += 3;
+                    invetar.splice(i,1);
+                break;
+              }
+              if(invetar[i].type == "hpbox") {
+                tancks[k].health += 1;
+                    invetar.splice(i,1);
+                break;
+              }
+              }
+
+       break;
+ case 4:
+
+              if (((x - tancks[k].x) < 30 && (x - tancks[k].x)> -29 ) && (((tancks[k].y - y) <=19)) && (tancks[k].y - y)>= -29)  {
+                  if(invetar[i].type == "bullIv"){
+                  tancks[k].bullet += 3;
+                    invetar.splice(i,1);
+                break;
+              }
+              if(invetar[i].type == "hpbox") {
+                tancks[k].health += 1;
+                    invetar.splice(i,1);
+                break;
+              }
+              }
+
+       break;
+}
+
+  }
+}
 
 
 //Управление танком
@@ -516,15 +675,53 @@ document.addEventListener('keydown', function(event) {
 }
 });
 
+function rand(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //Максимум не включается, минимум включается
+}
+
+function spawner() {
+  let randx = rand(1,32);
+    let randy = rand(1,21);
+    for(let o = 0; o < invetar.length; o++){
+      if(randx*30 == invetar[o].x && randy*30 == invetar[o].y){
+        // console.log(randx*30, invetar[o].x, randy*30, invetar[o].y);
+        // alert(invetar[o].x + " " + invetar[o].y);
+        return spawner();
+      }
+    }
+    for(let j = 0; j < items.length; j++){
+      if(randx*30 == items[j].x && randy*30 == items[j].y){
+        // console.log(randy*30, items[o].y, randx*30, invetar[o].x);
+        // alert(items[j].x + " " + items[j].y);
+        return spawner();
+      }
+    }
+        console.log(randx*30, randy*30);
+        return [randx, randy];
+      }
+    
+
+
 //конструктор блоков
 function block(x,y,st,sf,){
-  ctx.fillStyle = sf;
+ ctx.fillStyle = sf;
   ctx.fillRect(x,y,30,30);
   ctx.fillStyle = st;
-  ctx.fillRect(x+1,y+1,28,28);
+ ctx.fillRect(x+1,y+1,28,28);
+  
+  ctx.beginPath();
+  ctx.strokeStyle = sf;
+  ctx.lineWidth = 2;
+  ctx.moveTo(x,y);
+  ctx.lineTo(x+30,y+30);
+  ctx.moveTo(x+30,y);
+  ctx.lineTo(x,y+30);
+  ctx.stroke();
   ctx.fillStyle = sf;
   ctx.fillRect(x+8,y+8,15,15);
-  ctx.fillStyle = st;
+   ctx.fillStyle = st;
   ctx.fillRect(x+12,y+12,7,7);
   if (bild) {
   let block = {type:"block", id:blockn, x:x, y:y};
@@ -538,17 +735,13 @@ function box(x,y,st,sf,){
   ctx.fillStyle = sf;
   ctx.fillRect(x,y,30,30);
   ctx.fillStyle = st;
- ctx.fillRect(x+1,y+1,28,28);
+  ctx.fillRect(x+1,y+1,28,28);
   ctx.fillStyle = sf;
   ctx.fillRect(x+8,y+8,15,15);
-  ctx.beginPath();
-  ctx.strokeStyle = sf;
-  ctx.lineWidth = 3;
-  ctx.moveTo(x,y);
-  ctx.lineTo(x+30,y+30);
-  ctx.moveTo(x+30,y);
-  ctx.lineTo(x,y+30);
-  ctx.stroke();
+  ctx.fillStyle = st;
+  ctx.fillRect(x+12,y+12,7,7);
+
+  
   if(bild){
     let box = {type:"box", id:boxn, x:x, y:y};
     boxn += 1;
@@ -570,10 +763,31 @@ function tank(x,y,r){
      r:r,
      speed:5,
      bullet:bulletN,
-     health:health
+     health:health,
+     colldown: Date.now()
   }
   ntanck++;
   tancks.push(tanck);
+}
+
+function bulletIv(x,y){
+  let bullIv = {
+    type:"bullIv",
+    x:x,
+    y:y,
+    delete: Date.now()
+  }
+  invetar.push(bullIv);
+}
+
+function hpbox(x,y){
+  let hpbox = {
+    type:"hpbox",
+    x:x,
+    y:y,
+    delete: Date.now()
+  }
+  invetar.push(hpbox);
 }
 
 //конструктор  пули
