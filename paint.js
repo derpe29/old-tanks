@@ -46,6 +46,7 @@ let colspawn = Date.now();
   let bulletImg = new Image();
   let bulletIvImg = new Image();
   let hpimg = new Image();
+  let flpng = new Image();
 
 function clear () {
   ctx.clearRect(0,0,cnv.width,cnv.height);
@@ -67,9 +68,11 @@ function draw () {
     hps.innerText = 0;
   }
 
+if(tancks.length > 1){
   bulf.innerText = tancks[0].bullet;
   buls.innerText = tancks[1].bullet;
-  
+  }
+
 for (let i = 0; i<items.length ; i++) {
   if(items[i].type == "block")
   {
@@ -113,6 +116,9 @@ bulletIvImg.src = 'bul.png';
 }else if(invetar[i].type == "hpbox"){
 hpimg.src = 'hpbox.png';
  ctx.drawImage(hpimg, invetar[i].x, invetar[i].y, 30, 20);
+ }else if(invetar[i].type == "flash"){
+flpng.src = 'flash.png';
+ ctx.drawImage(flpng, invetar[i].x, invetar[i].y, 30, 20);
  }
 }
 
@@ -158,10 +164,8 @@ for(let i=0; i<=1000; i+=30){
 
 tank(90,90,4);
 tank(300,300,2);
-bulletIv(270,270);
-bulletIv(270,90);
-hpbox(330,270);
-hpbox(90,180);
+
+
 
 
 block(180,180,"#FF952B","#E8641C");
@@ -422,12 +426,15 @@ KeyboardController({
 function Render () {
   if(Date.now() - colspawn >= spawn){
     let object;
-    switch(rand(1,3)){
+    switch(rand(1,4)){
       case 1:
       object = hpbox;
       break;
       case 2:
       object = bulletIv;
+      break;
+      case 3:
+      object = flash;
       break;
     }
   let ran = spawner();
@@ -595,6 +602,11 @@ bulletm[i].x+=bulspeed;
                     invetar.splice(i,1);
                 break;
               }
+              if(invetar[i].type == "flash") {
+                tancks[k].speed += 0.5;
+                    invetar.splice(i,1);
+                break;
+              }
               }
 
        break;
@@ -614,6 +626,11 @@ bulletm[i].x+=bulspeed;
                     invetar.splice(i,1);
                 break;
               }
+               if(invetar[i].type == "flash") {
+                tancks[k].speed += 0.5;
+                    invetar.splice(i,1);
+                break;
+              }
               }
 
        break;
@@ -630,6 +647,11 @@ bulletm[i].x+=bulspeed;
                     invetar.splice(i,1);
                 break;
               }
+              if(invetar[i].type == "flash") {
+                tancks[k].speed += 0.5;
+                    invetar.splice(i,1);
+                break;
+              }
               }
 
        break;
@@ -643,6 +665,11 @@ bulletm[i].x+=bulspeed;
               }
               if(invetar[i].type == "hpbox") {
                 tancks[k].health += 1;
+                    invetar.splice(i,1);
+                break;
+              }
+              if(invetar[i].type == "flash") {
+                tancks[k].speed += 0.5;
                     invetar.splice(i,1);
                 break;
               }
@@ -778,6 +805,16 @@ function bulletIv(x,y){
     delete: Date.now()
   }
   invetar.push(bullIv);
+}
+
+function flash(x,y){
+  let fl = {
+    type:"flash",
+    x:x,
+    y:y,
+    delete: Date.now()
+  }
+  invetar.push(fl);
 }
 
 function hpbox(x,y){
