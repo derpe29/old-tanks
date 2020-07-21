@@ -1,5 +1,13 @@
+body{
+	margin: 0;
+	overflow: hidden;
+	font-family: sans-serif;
+}
+
 canvas{
-			background-color: #41DE33;
+			background-color: #5CE059;
+			margin: 0;
+
 		}
 .ft {
 	color: #D45C1C;

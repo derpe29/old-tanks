@@ -57,21 +57,58 @@ function draw () {
   let hps = document.querySelector('#db');
   let bulf = document.querySelector('#b');
   let buls = document.querySelector('#bb');
+  let spf = document.querySelector('#s');
+  let sps = document.querySelector('#sb');
   if (tancks.length>1) {
     hp.innerText = tancks[0].health;
     hps.innerText = tancks[1].health;
-  }else if (tancks[0].id == 1) {
+  }else if (tancks.length ==1){
+  if (tancks[0].id == 1) {
     hp.innerText = 0;
     hps.innerText = tancks[0].health;
   }else{
     hp.innerText = tancks[0].health;
     hps.innerText = 0;
   }
+}else{
+  hp.innerText = 0;
+    hps.innerText = 0;
+}
 
-if(tancks.length > 1){
-  bulf.innerText = tancks[0].bullet;
-  buls.innerText = tancks[1].bullet;
+ if (tancks.length>1) {
+    bulf.innerText = tancks[0].bullet;
+    buls.innerText = tancks[1].bullet;
+  }else if (tancks.length ==1){
+  if (tancks[0].id == 1) {
+    bulf.innerText = 0;
+    buls.innerText = tancks[0].bullet;
+  }else{
+    bulf.innerText = tancks[0].bullet;
+    buls.innerText = 0;
   }
+}else{
+  bulf.innerText = 0;
+    buls.innerText = 0;
+}
+
+  if (tancks.length>1) {
+    spf.innerText = tancks[0].speed;
+    sps.innerText = tancks[1].speed;
+  }else if (tancks.length ==1){
+  if (tancks[0].id == 1) {
+    spf.innerText = 0;
+    sps.innerText = tancks[0].speed;
+  }else{
+    spf.innerText = tancks[0].speed;
+    sps.innerText = 0;
+  }
+}else{
+  spf.innerText = 0;
+    sps.innerText = 0;
+}
+
+  
+
 
 for (let i = 0; i<items.length ; i++) {
   if(items[i].type == "block")
@@ -146,32 +183,57 @@ case 1:
 
 }
 
- for(let i=0; i<=970; i+=30){
+ for(let i=0; i<=1170; i+=30){
   block(i,0,"#FF952B","#E8641C");
 }
-for(let i=0; i<=1000; i+=30){
+for(let i=0; i<=690; i+=30){
   block(0,i,"#FF952B","#E8641C");
 }
-for(let i=0; i<=970; i+=30){
-  block(i,630,"#FF952B","#E8641C");
+for(let i=0; i<=1170; i+=30){
+  block(i,690,"#FF952B","#E8641C");
 }
-for(let i=0; i<=1000; i+=30){
-  block(960,i,"#FF952B","#E8641C");
+for(let i=0; i<=690; i+=30){
+  block(1170,i,"#FF952B","#E8641C");
 }
 
 
   
 
 tank(90,90,4);
-tank(300,300,2);
+tank(1080,600,2);
 
 
 
 
-block(180,180,"#FF952B","#E8641C");
-box(360,360,"#FF952B","#E8641C");
-box(180,360,"#FF952B","#E8641C");
-box(360,180,"#FF952B","#E8641C");
+
+for (let i=90; i<=600; i+=30){
+  box(150,i,"#FF952B","#E8641C");
+}
+for (let i=90; i<=600; i+=30){
+  box(180,i,"#FF952B","#E8641C");
+}
+for (let i=90; i<=600; i+=30){
+  box(1020,i,"#FF952B","#E8641C");
+}
+for (let i=90; i<=600; i+=30){
+  box(990,i,"#FF952B","#E8641C");
+}
+
+for (let i=240; i<=360; i+=30){
+  box(600,i,"#FF952B","#E8641C");
+}
+for (let i=240; i<=360; i+=30){
+  box(630,i,"#FF952B","#E8641C");
+}
+for (let i=240; i<=360; i+=30){
+  box(570,i,"#FF952B","#E8641C");
+}
+for (let i=240; i<=360; i+=30){
+  box(540,i,"#FF952B","#E8641C");
+}
+for (let i=240; i<=360; i+=30){
+  box(510,i,"#FF952B","#E8641C");
+}
 bild = false;
 
 
@@ -709,8 +771,8 @@ function rand(min, max) {
 }
 
 function spawner() {
-  let randx = rand(1,32);
-    let randy = rand(1,21);
+  let randx = rand(1,40);
+    let randy = rand(1,25);
     for(let o = 0; o < invetar.length; o++){
       if(randx*30 == invetar[o].x && randy*30 == invetar[o].y){
         // console.log(randx*30, invetar[o].x, randy*30, invetar[o].y);
@@ -767,6 +829,7 @@ function box(x,y,st,sf,){
   ctx.fillRect(x+8,y+8,15,15);
   ctx.fillStyle = st;
   ctx.fillRect(x+12,y+12,7,7);
+
 
   
   if(bild){
